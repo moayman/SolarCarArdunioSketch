@@ -8,7 +8,7 @@ byte right;
 byte left;
 bool backward;
 
-int Speeds[] = { 0, 35, 70, 100, 150, 180, 220, 255};
+int Speeds[] = { 0, 35, 70, 100, 150, 180, 220, 254};
 
 void setup() 
 {
