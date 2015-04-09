@@ -1,22 +1,25 @@
 #include <Servo.h> 
 
-#define DIR 2
-#define PWM 3
-#define STEERINGMOTOR 5
+#define CH1DIR 2
+#define CH1PWM 3
+#define CH2DIR 4
+#define CH2PWM 5
+#define STEERINGMOTOR 6
 
 Servo Steering;
 byte received;
-byte Angle;
-byte Speed;
+byte Angle = 7;
+byte Speed = 7;
 byte oldAngle;
 
 int Speeds[] = { 254, 220, 180, 150, 100, 70, 35, 0, 35, 70, 100, 150, 180, 220, 254};
 int Angles[] = { -35, -30, -25, -20, -15, -10, -5, 0, 5, 10, 15, 20, 25, 30, 35};
-int Offset=90;
+int Offset=70;
 
 void setup() 
 {
   Steering.attach(STEERINGMOTOR);
+  MoveServo(Angles[Angle]+Offset);
   Serial.begin(9600);
 }
 void MoveServo(int Target)
@@ -39,15 +42,19 @@ void loop()
     Speed = received & 0x0F;
     oldAngle = Angle;
     Angle = received >> 4;
-    if(Speed < 6)
-      digitalWrite(DIR,LOW);
+    if(Speed < 7)
+    {
+      digitalWrite(CH1DIR,LOW);
+      digitalWrite(CH2DIR,LOW);
+    }
     else
-      digitalWrite(DIR,HIGH);
+    {
+      digitalWrite(CH1DIR,HIGH);
+      digitalWrite(CH2DIR,HIGH);
+    }
     MoveServo(Angles[Angle]+Offset);
-    //if(Angle != oldAngle)
-      
-      //Steering.write(Angles[Angle]);
     Serial.write(received);
   }
-  analogWrite(PWM,Speeds[Speed]);
+  analogWrite(CH1PWM,Speeds[Speed]); 
+  analogWrite(CH2PWM,Speeds[Speed]);
 }
